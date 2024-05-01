@@ -1,0 +1,13 @@
+blinker
+click
+colorama
+Faker
+Flask
+itsdangerous
+Jinja2
+MarkupSafe
+python-dateutil
+six
+Werkzeug
+Gunicorn
+
