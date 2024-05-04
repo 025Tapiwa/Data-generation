@@ -2,15 +2,16 @@ from flask import Flask, jsonify
 import random
 from datetime import datetime, timedelta
 from faker import Faker
-from threading import Thread
-import time
 
 app = Flask(__name__)
 fake = Faker()
 
 streaming_data = []
 
-def generate_entry():
+num_rows = 10000  # Number of rows of dummy data
+
+# Generate dummy data
+for _ in range(num_rows):
     entry = {
         "Timestamp": fake.date_time_this_decade(),
         "IP Address": fake.ipv4(),
@@ -32,23 +33,11 @@ def generate_entry():
         "Sports type": random.choice(["Swimming", "Athletics", "Gymnastics", "Cycling", "Football", "Basketball", "Judo", "Hockey", "Taekwondo", "Badminton"]),
         "Gender of visitors": random.choice(["Male", "Female"])
     }
-    return entry
+    streaming_data.append(entry)
 
-def add_data_periodically():
-    while True:
-        new_entry = generate_entry()
-        streaming_data.append(new_entry)
-        time.sleep(1)  # Add new data every second
-
-@app.route('/api/streaming', methods=['GET'])
+@app.route('/', methods=['GET'])
 def get_streaming_data():
     return jsonify(streaming_data)
 
 if __name__ == '__main__':
-    # Start the background task to add data periodically
-    add_data_thread = Thread(target=add_data_periodically)
-    add_data_thread.daemon = True
-    add_data_thread.start()
-
-    # Start Flask app without debugger
-    app.run(debug=False)
+    app.run(debug=True)
